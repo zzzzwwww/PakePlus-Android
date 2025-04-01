@@ -18,6 +18,7 @@ jobs:
               with:
                   distribution: 'temurin'
                   java-version: '17'
+                  cache: gradle
 
             - name: Set up Android SDK
               uses: android-actions/setup-android@v3
@@ -28,27 +29,13 @@ jobs:
             - name: Build Release APK
               run: ./gradlew assembleRelease
 
-            - name: Find APK File
-              id: find_apk
-              run: echo "::set-output name=apk_path::$(find app/build/outputs/apk/release -name '*.apk' | head -n 1)"
-
-            - name: Upload APK as Artifact
-              uses: actions/upload-artifact@v4
-              with:
-                  name: release-apk
-                  path: ${{ steps.find_apk.outputs.apk_path }}
-
-            - name: Download APK Artifact
-              uses: actions/download-artifact@v4
-              with:
-                  name: release-apk
-                  path: ./
-
             - name: Create GitHub Release
               uses: softprops/action-gh-release@v2
               with:
-                  files: '*.apk'
+                  files: app/build/outputs/apk/release/*.apk
                   tag_name: 'PakePlus-v0.0.1'
                   body: 'PakePlus-v0.0.1'
+                  draft: false
+                  prerelease: false
               env:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
