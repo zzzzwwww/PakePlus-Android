@@ -38,14 +38,6 @@ jobs:
                   name: release-apk
                   path: ${{ steps.find_apk.outputs.apk_path }}
 
-    release:
-        name: Release APK
-        needs: build
-        runs-on: ubuntu-latest
-        steps:
-            - name: Checkout Repository
-              uses: actions/checkout@v4
-
             - name: Download APK Artifact
               uses: actions/download-artifact@v4
               with:
@@ -57,7 +49,6 @@ jobs:
               with:
                   files: '*.apk'
                   tag_name: 'PakePlus-v0.0.1'
-                  release_name: 'PakePlus-v0.0.1'
                   body: 'PakePlus-v0.0.1'
               env:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
