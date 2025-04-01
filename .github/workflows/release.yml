@@ -56,5 +56,8 @@ jobs:
               uses: softprops/action-gh-release@v2
               with:
                   files: '*.apk'
+                  tag_name: 'PakePlus-v0.0.1'
+                  release_name: 'PakePlus-v0.0.1'
+                  body: 'PakePlus-v0.0.1'
               env:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
