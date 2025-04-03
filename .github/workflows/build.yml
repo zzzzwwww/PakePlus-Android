@@ -3,7 +3,7 @@ name: Android Build & Sign APK
 on:
     push:
         branches:
-            - main # 修改为你的目标分支
+            - main
 
 jobs:
     build:
@@ -37,18 +37,10 @@ jobs:
                     -alias "$KEY_ALIAS" \
                     -dname "CN=MyApp, OU=Dev, O=Company, L=City, ST=State, C=Country"
 
-                  echo "Converting keystore to base64..."
-                  base64 keystore.jks > keystore.jks.b64
-                  cat keystore.jks.b64
-
+                  echo "Saving credentials to environment..."
                   echo "KEYSTORE_PASSWORD=$KEYSTORE_PASSWORD" >> $GITHUB_ENV
                   echo "KEY_PASSWORD=$KEY_PASSWORD" >> $GITHUB_ENV
                   echo "KEY_ALIAS=$KEY_ALIAS" >> $GITHUB_ENV
-                  echo "KEYSTORE_BASE64=$(cat keystore.jks.b64)" >> $GITHUB_ENV
-
-            - name: Decode Keystore File
-              run: |
-                  echo "$KEYSTORE_BASE64" | base64 --decode > keystore.jks
 
             - name: Grant execute permissions to Gradle
               run: chmod +x gradlew
@@ -64,7 +56,7 @@ jobs:
                     echo "❌ No unsigned APK found!"
                     exit 1
                   fi
-                  echo "FOUND_APK=$APK_PATH" >> $GITHUB_ENV
+                  echo "APK_PATH=$APK_PATH" >> $GITHUB_ENV
                   echo "✅ Found unsigned APK: $APK_PATH"
 
             - name: Sign APK using apksigner
@@ -80,7 +72,7 @@ jobs:
                     --key-pass pass:$KEY_PASSWORD \
                     --ks-key-alias $KEY_ALIAS \
                     --out "$SIGNED_APK" \
-                    "$FOUND_APK"
+                    "$APK_PATH"
 
             - name: Verify APK Signature
               run: |
@@ -100,11 +92,6 @@ jobs:
               run: |
                   BUILD_TOOLS_DIR=$(ls $ANDROID_HOME/build-tools | sort -V | tail -n 1)
                   ZIPALIGN="$ANDROID_HOME/build-tools/$BUILD_TOOLS_DIR/zipalign"
-
-                  if [ ! -f "${{ github.workspace }}/app/build/outputs/apk/release/app-release.apk" ]; then
-                    echo "❌ Signed APK not found for zipalign!"
-                    exit 1
-                  fi
 
                   echo "Running zipalign..."
                   $ZIPALIGN -v 4 \
