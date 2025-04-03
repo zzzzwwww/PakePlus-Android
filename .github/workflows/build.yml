@@ -34,11 +34,15 @@ jobs:
 
       - name: Generate Keystore
         run: |
-          keytool -genkeypair -v -keystore keystore.jks -keyalg RSA -keysize 2048 -validity 10000 \
-              -storepass myKeystorePass -keypass myKeyPass -alias my-key-alias -dname "CN=MyApp, OU=Dev, O=MyCompany, L=City, S=State, C=US"
+            # 生成一个新的 keystore 文件
+            keytool -genkey -v -keystore keystore.jks -keyalg RSA -keysize 2048 \
+                -validity 10000 -alias my-key-alias \
+                -dname "CN=My Name, OU=My Org Unit, O=My Org, L=My City, ST=My State, C=My Country" \
+                -storepass myKeystorePass -keypass myKeyPass
 
       - name: Build unsigned APK
         run: |
+          keytool -list -v -keystore keystore.jks -storepass myKeystorePass
           ./gradlew assembleRelease
           ls -l app/build/outputs/apk/release
 
