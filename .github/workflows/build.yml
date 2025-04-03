@@ -47,45 +47,49 @@ jobs:
             -keypass password \
             -dname "CN=Android, OU=Android, O=Android, L=Unknown, ST=Unknown, C=US"
 
-      - name: Configure gradle.properties
+      - name: Configure signing
         run: |
-          cat << EOF > $GITHUB_WORKSPACE/gradle.properties
-          android.useAndroidX=true
-          android.enableJetifier=true
-          android.nonTransitiveRClass=true
-          RELEASE_STORE_FILE=my-release-key.keystore
-          RELEASE_STORE_PASSWORD=password
-          RELEASE_KEY_ALIAS=my-key-alias
-          RELEASE_KEY_PASSWORD=password
+          # 创建临时签名配置脚本
+          cat << EOF > signing-config.gradle
+          android {
+              signingConfigs {
+                  release {
+                      storeFile file('my-release-key.keystore')
+                      storePassword 'password'
+                      keyAlias 'my-key-alias'
+                      keyPassword 'password'
+                  }
+              }
+              buildTypes {
+                  release {
+                      signingConfig signingConfigs.release
+                  }
+              }
+          }
           EOF
 
       - name: Build signed APK
         run: |
-          ./gradlew assembleRelease
+          # 应用签名配置并构建
+          ./gradlew -Psigning-config.gradle assembleRelease
           ls -l app/build/outputs/apk/release
 
       - name: Verify APK signature
         run: |
-          # 确保 build-tools 存在
-          if [ ! -d "$ANDROID_HOME/build-tools" ]; then
-              echo "Installing build-tools..."
-              yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager "build-tools;34.0.0"
-          fi
-    
-          # 使用最新 build-tools 版本
+          # 设置apksigner路径
           BUILD_TOOLS_DIR=$(ls $ANDROID_HOME/build-tools | sort -V | tail -n 1)
           APKSIGNER="$ANDROID_HOME/build-tools/$BUILD_TOOLS_DIR/apksigner"
           
-          echo "Using apksigner at: $APKSIGNER"
-          $APKSIGNER --version
+          # 查找已签名的APK（排除未签名文件）
+          apk_path=$(find app/build/outputs/apk/release -name "*.apk" ! -name "*-unsigned*" | head -n 1)
           
-          apk_path=$(find app/build/outputs/apk/release -name "*.apk" | head -n 1)
           if [ ! -f "$apk_path" ]; then
-              echo "❌ APK not found at $apk_path"
+              echo "❌ Signed APK not found!"
+              find app/build/outputs/apk/release -type f
               exit 1
           fi
           
-          echo "Verifying $apk_path"
+          echo "Verifying signed APK at: $apk_path"
           $APKSIGNER verify --verbose "$apk_path"
           echo "✅ APK verification successful"
 
