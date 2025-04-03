@@ -47,15 +47,11 @@ jobs:
             -keypass password \
             -dname "CN=Android, OU=Android, O=Android, L=Unknown, ST=Unknown, C=US"
 
-      - name: Configure signing in gradle.properties
+      - name: Configure gradle.properties
         run: |
-          # 先检查是否存在原有gradle.properties
-          if [ -f "$GITHUB_WORKSPACE/gradle.properties" ]; then
-              # 备份原有文件
-              cp $GITHUB_WORKSPACE/gradle.properties $GITHUB_WORKSPACE/gradle.properties.bak
-          fi
-          # 创建新的gradle.properties
           cat << EOF > $GITHUB_WORKSPACE/gradle.properties
+          android.useAndroidX=true
+          android.enableJetifier=true
           android.nonTransitiveRClass=true
           RELEASE_STORE_FILE=my-release-key.keystore
           RELEASE_STORE_PASSWORD=password
