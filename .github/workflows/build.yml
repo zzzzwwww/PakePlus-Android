@@ -66,12 +66,28 @@ jobs:
 
       - name: Verify APK signature
         run: |
+          # 确保 build-tools 存在
+          if [ ! -d "$ANDROID_HOME/build-tools" ]; then
+              echo "Installing build-tools..."
+              yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager "build-tools;34.0.0"
+          fi
+    
+          # 使用最新 build-tools 版本
+          BUILD_TOOLS_DIR=$(ls $ANDROID_HOME/build-tools | sort -V | tail -n 1)
+          APKSIGNER="$ANDROID_HOME/build-tools/$BUILD_TOOLS_DIR/apksigner"
+          
+          echo "Using apksigner at: $APKSIGNER"
+          $APKSIGNER --version
+          
           apk_path=$(find app/build/outputs/apk/release -name "*.apk" | head -n 1)
-          if [ -z "$apk_path" ]; then
-              echo "APK not found!"
+          if [ ! -f "$apk_path" ]; then
+              echo "❌ APK not found at $apk_path"
               exit 1
           fi
-          apksigner verify --verbose "$apk_path"
+          
+          echo "Verifying $apk_path"
+          $APKSIGNER verify --verbose "$apk_path"
+          echo "✅ APK verification successful"
 
       - name: Upload signed APK
         uses: actions/upload-artifact@v4
