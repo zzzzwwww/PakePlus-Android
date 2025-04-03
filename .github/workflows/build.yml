@@ -32,37 +32,53 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
 
-      - name: Generate Keystore
-        run: |
-            # 生成一个新的 keystore 文件
-            keytool -genkey -v -keystore keystore.jks -keyalg RSA -keysize 2048 \
-                -validity 10000 -alias my-key-alias \
-                -dname "CN=My Name, OU=My Org Unit, O=My Org, L=My City, ST=My State, C=My Country" \
-                -storepass myKeystorePass -keypass myKeyPass
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
 
-      - name: Build unsigned APK
+      - name: Generate signing key
         run: |
-          keytool -list -v -keystore keystore.jks -storepass myKeystorePass
+          keytool -genkey -v \
+            -keystore my-release-key.keystore \
+            -alias my-key-alias \
+            -keyalg RSA \
+            -keysize 2048 \
+            -validity 10000 \
+            -storepass password \
+            -keypass password \
+            -dname "CN=Android, OU=Android, O=Android, L=Unknown, ST=Unknown, C=US"
+
+      - name: Configure signing in gradle.properties
+        run: |
+          # 先检查是否存在原有gradle.properties
+          if [ -f "$GITHUB_WORKSPACE/gradle.properties" ]; then
+              # 备份原有文件
+              cp $GITHUB_WORKSPACE/gradle.properties $GITHUB_WORKSPACE/gradle.properties.bak
+          fi
+          # 创建新的gradle.properties
+          cat << EOF > $GITHUB_WORKSPACE/gradle.properties
+          android.nonTransitiveRClass=true
+          RELEASE_STORE_FILE=my-release-key.keystore
+          RELEASE_STORE_PASSWORD=password
+          RELEASE_KEY_ALIAS=my-key-alias
+          RELEASE_KEY_PASSWORD=password
+          EOF
+
+      - name: Build signed APK
+        run: |
           ./gradlew assembleRelease
           ls -l app/build/outputs/apk/release
 
-      - name: Sign APK
+      - name: Verify APK signature
         run: |
-          jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA-256 \
-              -keystore keystore.jks -storepass myKeystorePass \
-              -keypass myKeyPass \
-              app/build/outputs/apk/release/app-release-unsigned.apk my-key-alias
-          
-          # 验证签名
-          jarsigner -verify -verbose -certs app/build/outputs/apk/release/app-release-unsigned.apk
-          
-          # 使用 zipalign 进行优化
-          ${ANDROID_HOME}/build-tools/$(ls ${ANDROID_HOME}/build-tools | tail -n 1)/zipalign -v 4 \
-              app/build/outputs/apk/release/app-release-unsigned.apk \
-              app/build/outputs/apk/release/app-release.apk
+          apk_path=$(find app/build/outputs/apk/release -name "*.apk" | head -n 1)
+          if [ -z "$apk_path" ]; then
+              echo "APK not found!"
+              exit 1
+          fi
+          apksigner verify --verbose "$apk_path"
 
-      - name: Upload Signed APK
+      - name: Upload signed APK
         uses: actions/upload-artifact@v4
         with:
-          name: app-release.apk
-          path: app/build/outputs/apk/release/app-release.apk
+          name: app-release-signed.apk
+          path: app/build/outputs/apk/release/*-release.apk
