@@ -27,6 +27,8 @@ jobs:
               run: |
                   sudo apt-get update
                   sudo apt-get install -y imagemagick
+                  which magick
+                  echo $PATH
                   magick --version
 
             - name: Generate Android Icons
