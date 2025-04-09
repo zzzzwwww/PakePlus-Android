@@ -34,7 +34,9 @@ jobs:
                   cache: pnpm
 
             - name: Generate Android Icons
-              run: pnpm icon
+              run: |
+                  pnpm install
+                  pnpm icon
 
             - name: Grant Execute Permission for Gradle
               run: chmod +x ./gradlew
