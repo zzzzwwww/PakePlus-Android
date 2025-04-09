@@ -24,7 +24,7 @@ jobs:
               uses: android-actions/setup-android@v3
 
             - name: Generate Android App Icon
-              uses: masaeedu/android-icon-generator@v1
+              uses: masaeedu/android-icon-generator@v4
               with:
                   icon-file: 'pakeplus.png' # 你的图标文件路径
                   output-directory: 'app/src/main/res' # 输出到Android资源目录
