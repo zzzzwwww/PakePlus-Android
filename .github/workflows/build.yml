@@ -24,10 +24,15 @@ jobs:
               uses: android-actions/setup-android@v3
 
             - name: Install ImageMagick
-              run: sudo apt-get install imagemagick
+              run: |
+                  sudo apt-get update
+                  sudo apt-get install -y imagemagick
+                  magick --version
 
-            - name: Generate Android App Icons
-              run: ./scripts/generate_icons.sh
+            - name: Generate Android Icons
+              run: |
+                  chmod +x scripts/generate_icons.sh
+                  ./scripts/generate_icons.sh
 
             - name: Grant Execute Permission for Gradle
               run: chmod +x ./gradlew
