@@ -1,28 +1,31 @@
 package com.app.pakeplus
 
 import android.annotation.SuppressLint
+import android.graphics.Bitmap
 import android.os.Bundle
-import android.view.Menu
-import android.view.WindowInsets
 import android.webkit.WebView
+import android.webkit.WebViewClient
 import androidx.activity.enableEdgeToEdge
-import com.google.android.material.snackbar.Snackbar
-import com.google.android.material.navigation.NavigationView
-import androidx.navigation.findNavController
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.navigateUp
-import androidx.navigation.ui.setupActionBarWithNavController
-import androidx.navigation.ui.setupWithNavController
-import androidx.drawerlayout.widget.DrawerLayout
+//import android.view.Menu
+//import android.view.WindowInsets
+//import com.google.android.material.snackbar.Snackbar
+//import com.google.android.material.navigation.NavigationView
+//import androidx.navigation.findNavController
+//import androidx.navigation.ui.AppBarConfiguration
+//import androidx.navigation.ui.navigateUp
+//import androidx.navigation.ui.setupActionBarWithNavController
+//import androidx.navigation.ui.setupWithNavController
+//import androidx.drawerlayout.widget.DrawerLayout
+//import com.app.pakeplus.databinding.ActivityMainBinding
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import com.app.pakeplus.databinding.ActivityMainBinding
+import java.io.IOException
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var appBarConfiguration: AppBarConfiguration
-    private lateinit var binding: ActivityMainBinding
+//    private lateinit var appBarConfiguration: AppBarConfiguration
+//    private lateinit var binding: ActivityMainBinding
 
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -33,17 +36,23 @@ class MainActivity : AppCompatActivity() {
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.ConstraintLayout)) { view, insets ->
             val systemBar = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             view.setPadding(
-                systemBar.left,
-                systemBar.top,
-                systemBar.right,
-                systemBar.bottom
+                systemBar.left, systemBar.top, systemBar.right, systemBar.bottom
             )
             insets
         }
 
         val webView = findViewById<WebView>(R.id.webview)
         webView.settings.javaScriptEnabled = true // 启用 JavaScript
-        webView.loadUrl("https://ppofficial.pages.dev/") // 加载网页
+
+        // 注入js代码
+
+        // 设置 WebViewClient 以确保在 WebView 内部加载页面
+        webView.evaluateJavascript("javascript:(function() { alert('111') })();") {
+            // 这里可以处理 JavaScript 执行后的结果
+            println("JavaScript executed: ")
+        }
+
+        webView.loadUrl("https://www.baidu.com/") // 加载网页
 
 //        binding = ActivityMainBinding.inflate(layoutInflater)
 //        setContentView(R.layout.single_main)
@@ -81,4 +90,19 @@ class MainActivity : AppCompatActivity() {
 //        val navController = findNavController(R.id.nav_host_fragment_content_main)
 //        return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
 //    }
+
+
+    private fun getJsCodeFromAssets(fileName: String): String {
+        return try {
+            val inputStream = assets.open(fileName)
+            val size = inputStream.available()
+            val buffer = ByteArray(size)
+            inputStream.read(buffer)
+            inputStream.close()
+            String(buffer, Charsets.UTF_8)
+        } catch (e: IOException) {
+            e.printStackTrace()
+            ""
+        }
+    }
 }

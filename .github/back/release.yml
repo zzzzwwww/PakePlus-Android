@@ -23,12 +23,6 @@ jobs:
             - name: Set up Android SDK
               uses: android-actions/setup-android@v3
 
-            - name: Generate Android App Icon
-              uses: masaeedu/android-icon-generator@v1
-              with:
-                  icon-file: 'pakeplus.png' # 你的图标文件路径
-                  output-directory: 'app/src/main/res' # 输出到Android资源目录
-
             - name: Grant Execute Permission for Gradle
               run: chmod +x ./gradlew
 
