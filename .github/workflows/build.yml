@@ -44,7 +44,7 @@ jobs:
             - name: Grant Execute Permission for Gradle
               run: chmod +x ./gradlew
 
-            - name: Build Debug APK (可安装版本)
+            - name: Build Debug APK
               run: ./gradlew assembleDebug
 
             - name: Create GitHub Release
