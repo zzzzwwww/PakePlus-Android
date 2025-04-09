@@ -4,9 +4,15 @@
     "description": "",
     "main": "index.js",
     "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1"
+        "icon": "node ./scripts/generateIcons.cjs -i pakeplus.png  --copy-to app/src/main/res",
+        "icon:round": "node ./scripts/generateIcons.cjs -i pakeplus.png --rounded --copy-to app/src/main/res"
     },
     "keywords": [],
     "author": "",
-    "license": "ISC"
+    "license": "ISC",
+    "dependencies": {
+        "commander": "^13.1.0",
+        "fs-extra": "^11.3.0",
+        "sharp": "^0.34.1"
+    }
 }
