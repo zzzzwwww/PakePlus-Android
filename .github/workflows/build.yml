@@ -23,12 +23,17 @@ jobs:
             - name: Set up Android SDK
               uses: android-actions/setup-android@v3
 
-            - name: Install ImageMagick
+            - name: Compile and Install ImageMagick from Source
               run: |
                   sudo apt-get update
-                  sudo apt-get install -y imagemagick
-                  which magick
-                  echo $PATH
+                  sudo apt-get install -y build-essential libjpeg-dev libpng-dev libtiff-dev libgif-dev
+                  wget https://imagemagick.org/download/ImageMagick.tar.gz
+                  tar xvzf ImageMagick.tar.gz
+                  cd ImageMagick-*
+                  ./configure
+                  make
+                  sudo make install
+                  sudo ldconfig /usr/local/lib
                   magick --version
 
             - name: Generate Android Icons
