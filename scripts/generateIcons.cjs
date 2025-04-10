@@ -26,29 +26,37 @@ async function generateAdaptiveIcons(input, outputDir) {
         await fs.ensureDir(mipmapDir)
         const foregroundPath = path.join(
             mipmapDir,
-            'ic_launcher_foreground.png'
+            'ic_launcher_foreground.webp'
         )
         const backgroundPath = path.join(
             mipmapDir,
-            'ic_launcher_background.png'
+            'ic_launcher_background.webp'
         )
-        const legacyPath = path.join(mipmapDir, 'ic_launcher.png')
+        const legacyPath = path.join(mipmapDir, 'ic_launcher.webp')
+        const legacyRoundPath = path.join(mipmapDir, 'ic_launcher_round.webp')
 
+        // 创建圆形遮罩
+        const roundedMask = Buffer.from(
+            `<svg><circle cx="${size / 2}" cy="${size / 2}" r="${
+                size / 2
+            }" fill="white"/></svg>`
+        )
+
+        // 生成普通图标
         const img = sharp(input).resize(size, size)
-        const rounded = options.rounded
-            ? img.composite([
-                  {
-                      input: Buffer.from(
-                          `<svg><circle cx="${size / 2}" cy="${size / 2}" r="${
-                              size / 2
-                          }" fill="white"/></svg>`
-                      ),
-                      blend: 'dest-in',
-                  },
-              ])
-            : img
+        await img.webp().toFile(foregroundPath)
+        await img.webp().toFile(legacyPath)
 
-        await rounded.toFile(foregroundPath)
+        // 生成圆形图标
+        const roundedImg = img.composite([
+            {
+                input: roundedMask,
+                blend: 'dest-in',
+            },
+        ])
+        await roundedImg.webp().toFile(legacyRoundPath)
+
+        // 生成背景
         await sharp({
             create: {
                 width: size,
@@ -57,11 +65,8 @@ async function generateAdaptiveIcons(input, outputDir) {
                 background: '#FFFFFF',
             },
         })
-            .png()
+            .webp()
             .toFile(backgroundPath)
-
-        // legacy fallback
-        await rounded.toFile(legacyPath)
     }
 
     // Generate XML
@@ -87,7 +92,7 @@ async function generateAdaptiveIcons(input, outputDir) {
   `.trim()
     )
 
-    console.log('✅ Adaptive icons generated.')
+    console.log('✅ Adaptive icons generated in WebP format.')
 }
 
 ;(async () => {
@@ -99,5 +104,7 @@ async function generateAdaptiveIcons(input, outputDir) {
         const dest = path.resolve(copyTo)
         await fs.copy(outPath, dest, { overwrite: true })
         console.log(`📦 Icons copied to Android res dir: ${dest}`)
+        // 删除根目录的res
+        await fs.remove(outPath)
     }
 })()
