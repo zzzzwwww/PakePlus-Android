@@ -52,6 +52,7 @@ class MainActivity : AppCompatActivity() {
             "Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1"
         webView.settings.loadWithOverviewMode = true
         webView.settings.setSupportZoom(false)
+        
 
         // clear cache
         webView.clearCache(true)
@@ -62,7 +63,7 @@ class MainActivity : AppCompatActivity() {
         // get web load progress
         webView.webChromeClient = MyChromeClient()
 
-        webView.loadUrl("https://juejin.cn/")
+        webView.loadUrl("https://ppofficial.netlify.app/")
 
 //        binding = ActivityMainBinding.inflate(layoutInflater)
 //        setContentView(R.layout.single_main)
@@ -123,14 +124,21 @@ class MainActivity : AppCompatActivity() {
 
         override fun onPageFinished(view: WebView?, url: String?) {
             super.onPageFinished(view, url)
-            val jsCode = assets.open("vConsole.js").bufferedReader().use { it.readText() }
-            view?.evaluateJavascript(jsCode, null)
-            // 页面加载完成后注入 JS
-            view?.evaluateJavascript("""var vConsole = new window.VConsole()""", null)
+//            val jsCode = assets.open("vConsole.js").bufferedReader().use { it.readText() }
+//            view?.evaluateJavascript(jsCode, null)
+//            // 页面加载完成后注入 JS
+//            view?.evaluateJavascript("""var vConsole = new window.VConsole()""", null)
         }
 
         override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
             super.onPageStarted(view, url, favicon)
+            // vConsole
+            val vConsole = assets.open("vConsole.js").bufferedReader().use { it.readText() }
+            // inject js
+            val injectJs = assets.open("inject.js").bufferedReader().use { it.readText() }
+            view?.evaluateJavascript(vConsole + injectJs, null)
+            // open vConsole
+            view?.evaluateJavascript("""var vConsole = new window.VConsole()""", null)
         }
     }
 
