@@ -3,6 +3,9 @@ package com.app.pakeplus
 import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import android.os.Bundle
+import android.webkit.WebChromeClient
+import android.webkit.WebResourceError
+import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.activity.enableEdgeToEdge
@@ -43,17 +46,22 @@ class MainActivity : AppCompatActivity() {
         }
 
         val webView = findViewById<WebView>(R.id.webview)
-        webView.settings.javaScriptEnabled = true // 启用 JavaScript
 
-        // 注入js代码
+        webView.settings.javaScriptEnabled = true
+        webView.settings.userAgentString =
+            "Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1"
+        webView.settings.loadWithOverviewMode = true
+        webView.settings.setSupportZoom(false)
 
-        // 设置 WebViewClient 以确保在 WebView 内部加载页面
-        webView.evaluateJavascript("javascript:(function() { alert('111') })();") {
-            // 这里可以处理 JavaScript 执行后的结果
-            println("JavaScript executed: ")
-        }
+        // clear cache
+        webView.clearCache(true)
 
-        // 加载网页
+        // inject js
+        webView.webViewClient = MyWebViewClient()
+
+        // get web load progress
+        webView.webChromeClient = MyChromeClient()
+
         webView.loadUrl("https://juejin.cn/")
 
 //        binding = ActivityMainBinding.inflate(layoutInflater)
@@ -93,18 +101,44 @@ class MainActivity : AppCompatActivity() {
 //        return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
 //    }
 
+    inner class MyWebViewClient : WebViewClient() {
 
-    private fun getJsCodeFromAssets(fileName: String): String {
-        return try {
-            val inputStream = assets.open(fileName)
-            val size = inputStream.available()
-            val buffer = ByteArray(size)
-            inputStream.read(buffer)
-            inputStream.close()
-            String(buffer, Charsets.UTF_8)
-        } catch (e: IOException) {
-            e.printStackTrace()
-            ""
+        @Deprecated("Deprecated in Java", ReplaceWith("false"))
+        override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
+            return false
+        }
+
+        override fun doUpdateVisitedHistory(view: WebView?, url: String?, isReload: Boolean) {
+            super.doUpdateVisitedHistory(view, url, isReload)
+        }
+
+        override fun onReceivedError(
+            view: WebView?,
+            request: WebResourceRequest?,
+            error: WebResourceError?
+        ) {
+            super.onReceivedError(view, request, error)
+            println("webView onReceivedError")
+        }
+
+        override fun onPageFinished(view: WebView?, url: String?) {
+            super.onPageFinished(view, url)
+            val jsCode = assets.open("vConsole.js").bufferedReader().use { it.readText() }
+            view?.evaluateJavascript(jsCode, null)
+            // 页面加载完成后注入 JS
+            view?.evaluateJavascript("""var vConsole = new window.VConsole()""", null)
+        }
+
+        override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
+            super.onPageStarted(view, url, favicon)
+        }
+    }
+
+    inner class MyChromeClient : WebChromeClient() {
+        override fun onProgressChanged(view: WebView?, newProgress: Int) {
+            super.onProgressChanged(view, newProgress)
+            val url = view?.url
+            println("wev view url:$url")
         }
     }
 }
