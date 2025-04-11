@@ -52,7 +52,7 @@ class MainActivity : AppCompatActivity() {
             println("JavaScript executed: ")
         }
 
-        webView.loadUrl("https://www.baidu.com/") // 加载网页
+        webView.loadUrl("https://ai.aitops.cn:8081") // 加载网页
 
 //        binding = ActivityMainBinding.inflate(layoutInflater)
 //        setContentView(R.layout.single_main)
