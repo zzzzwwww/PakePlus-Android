@@ -58,7 +58,7 @@ class MainActivity : AppCompatActivity() {
             "Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1"
         webView.settings.loadWithOverviewMode = true
         webView.settings.setSupportZoom(false)
-        
+
 
         // clear cache
         webView.clearCache(true)
@@ -70,39 +70,40 @@ class MainActivity : AppCompatActivity() {
         webView.webChromeClient = MyChromeClient()
 
         // Setup gesture detector
-        gestureDetector = GestureDetectorCompat(this, object : GestureDetector.SimpleOnGestureListener() {
-            override fun onFling(
-                e1: MotionEvent?,
-                e2: MotionEvent,
-                velocityX: Float,
-                velocityY: Float
-            ): Boolean {
-                if (e1 == null) return false
-                
-                val diffX = e2.x - e1.x
-                val diffY = e2.y - e1.y
-                
-                // Only handle horizontal swipes
-                if (Math.abs(diffX) > Math.abs(diffY)) {
-                    if (Math.abs(diffX) > 100 && Math.abs(velocityX) > 100) {
-                        if (diffX > 0) {
-                            // Swipe right - go back
-                            if (webView.canGoBack()) {
-                                webView.goBack()
-                                return true
-                            }
-                        } else {
-                            // Swipe left - go forward
-                            if (webView.canGoForward()) {
-                                webView.goForward()
-                                return true
+        gestureDetector =
+            GestureDetectorCompat(this, object : GestureDetector.SimpleOnGestureListener() {
+                override fun onFling(
+                    e1: MotionEvent?,
+                    e2: MotionEvent,
+                    velocityX: Float,
+                    velocityY: Float
+                ): Boolean {
+                    if (e1 == null) return false
+
+                    val diffX = e2.x - e1.x
+                    val diffY = e2.y - e1.y
+
+                    // Only handle horizontal swipes
+                    if (Math.abs(diffX) > Math.abs(diffY)) {
+                        if (Math.abs(diffX) > 100 && Math.abs(velocityX) > 100) {
+                            if (diffX > 0) {
+                                // Swipe right - go back
+                                if (webView.canGoBack()) {
+                                    webView.goBack()
+                                    return true
+                                }
+                            } else {
+                                // Swipe left - go forward
+                                if (webView.canGoForward()) {
+                                    webView.goForward()
+                                    return true
+                                }
                             }
                         }
                     }
+                    return false
                 }
-                return false
-            }
-        })
+            })
 
         // Set touch listener for WebView
         webView.setOnTouchListener { _, event ->
@@ -138,6 +139,8 @@ class MainActivity : AppCompatActivity() {
 //        navView.setupWithNavController(navController)
     }
 
+
+    @Deprecated("Deprecated in Java")
     override fun onBackPressed() {
         if (webView.canGoBack()) {
             webView.goBack()
