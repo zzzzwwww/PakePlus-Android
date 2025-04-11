@@ -124,10 +124,6 @@ class MainActivity : AppCompatActivity() {
 
         override fun onPageFinished(view: WebView?, url: String?) {
             super.onPageFinished(view, url)
-//            val jsCode = assets.open("vConsole.js").bufferedReader().use { it.readText() }
-//            view?.evaluateJavascript(jsCode, null)
-//            // 页面加载完成后注入 JS
-//            view?.evaluateJavascript("""var vConsole = new window.VConsole()""", null)
         }
 
         override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
