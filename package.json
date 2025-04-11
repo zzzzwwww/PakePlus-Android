@@ -8,8 +8,11 @@
         "icon:round": "node ./scripts/generateIcons.cjs -i pakeplus.png --rounded --copy-to app/src/main/res",
         "icon:appName": "node ./scripts/generateIcons.cjs -i pakeplus.png --copy-to app/src/main/res --app-name 1024小神"
     },
-    "keywords": [],
-    "author": "",
+    "keywords": [
+        "pakeplus",
+        "pakeplus-android"
+    ],
+    "author": "1024小神",
     "license": "ISC",
     "dependencies": {
         "commander": "^13.1.0",

@@ -33,10 +33,11 @@ class MainActivity : AppCompatActivity() {
 
         enableEdgeToEdge()
         setContentView(R.layout.single_main)
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.ConstraintLayout)) { view, insets ->
             val systemBar = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             view.setPadding(
-                systemBar.left, systemBar.top, systemBar.right, systemBar.bottom
+                0, systemBar.top, 0, 0
             )
             insets
         }
@@ -52,7 +53,8 @@ class MainActivity : AppCompatActivity() {
             println("JavaScript executed: ")
         }
 
-        webView.loadUrl("https://ai.aitops.cn:8081") // 加载网页
+        // 加载网页
+        webView.loadUrl("https://ppofficial.pages.dev")
 
 //        binding = ActivityMainBinding.inflate(layoutInflater)
 //        setContentView(R.layout.single_main)
