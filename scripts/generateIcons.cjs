@@ -16,6 +16,7 @@ program
     .option('-o, --output <dir>', 'Output directory', 'res')
     .option('--rounded', 'Apply circular mask to icons')
     .option('--copy-to <androidResDir>', 'Copy icons to Android res directory')
+    .option('--app-name <name>', 'Set the app name in strings.xml')
 
 program.parse(process.argv)
 const options = program.opts()
@@ -95,8 +96,53 @@ async function generateAdaptiveIcons(input, outputDir) {
     console.log('✅ Adaptive icons generated in WebP format.')
 }
 
+async function updateAppName(androidResDir, appName) {
+    try {
+        const stringsPath = path.join(androidResDir, 'values', 'strings.xml')
+
+        // Check if strings.xml exists
+        const exists = await fs.pathExists(stringsPath)
+        if (!exists) {
+            console.log('⚠️ strings.xml not found, creating a new one')
+            await fs.ensureDir(path.dirname(stringsPath))
+            await fs.writeFile(
+                stringsPath,
+                `<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">${appName}</string>
+</resources>`
+            )
+            console.log(`✅ Created strings.xml with app_name: ${appName}`)
+            return
+        }
+
+        // Read and update existing strings.xml
+        let content = await fs.readFile(stringsPath, 'utf8')
+
+        // Check if app_name already exists
+        if (content.includes('<string name="app_name">')) {
+            content = content.replace(
+                /<string name="app_name">.*?<\/string>/,
+                `<string name="app_name">${appName}</string>`
+            )
+        } else {
+            // Add app_name if it doesn't exist
+            content = content.replace(
+                /<\/resources>/,
+                `    <string name="app_name">${appName}</string>\n</resources>`
+            )
+        }
+
+        await fs.writeFile(stringsPath, content)
+        console.log(`✅ Updated app_name to: ${appName}`)
+    } catch (error) {
+        console.error('❌ Error updating app name:', error)
+    }
+}
+
+// Main execution
 ;(async () => {
-    const { input, output, copyTo } = options
+    const { input, output, copyTo, appName } = options
     const outPath = path.resolve(output)
     await generateAdaptiveIcons(input, outPath)
 
@@ -104,7 +150,15 @@ async function generateAdaptiveIcons(input, outputDir) {
         const dest = path.resolve(copyTo)
         await fs.copy(outPath, dest, { overwrite: true })
         console.log(`📦 Icons copied to Android res dir: ${dest}`)
+
+        // Update app name if provided
+        if (appName) {
+            await updateAppName(dest, appName)
+        }
+
         // 删除根目录的res
         await fs.remove(outPath)
+    } else if (appName) {
+        console.log('⚠️ --app-name requires --copy-to to be specified')
     }
 })()
