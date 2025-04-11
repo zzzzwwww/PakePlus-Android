@@ -3,6 +3,8 @@ package com.app.pakeplus
 import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import android.os.Bundle
+import android.view.GestureDetector
+import android.view.MotionEvent
 import android.webkit.WebChromeClient
 import android.webkit.WebResourceError
 import android.webkit.WebResourceRequest
@@ -21,6 +23,7 @@ import androidx.activity.enableEdgeToEdge
 //import androidx.drawerlayout.widget.DrawerLayout
 //import com.app.pakeplus.databinding.ActivityMainBinding
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.GestureDetectorCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import java.io.IOException
@@ -30,7 +33,10 @@ class MainActivity : AppCompatActivity() {
 //    private lateinit var appBarConfiguration: AppBarConfiguration
 //    private lateinit var binding: ActivityMainBinding
 
-    @SuppressLint("SetJavaScriptEnabled")
+    private lateinit var webView: WebView
+    private lateinit var gestureDetector: GestureDetectorCompat
+
+    @SuppressLint("SetJavaScriptEnabled", "ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -45,7 +51,7 @@ class MainActivity : AppCompatActivity() {
             insets
         }
 
-        val webView = findViewById<WebView>(R.id.webview)
+        webView = findViewById<WebView>(R.id.webview)
 
         webView.settings.javaScriptEnabled = true
         webView.settings.userAgentString =
@@ -62,6 +68,47 @@ class MainActivity : AppCompatActivity() {
 
         // get web load progress
         webView.webChromeClient = MyChromeClient()
+
+        // Setup gesture detector
+        gestureDetector = GestureDetectorCompat(this, object : GestureDetector.SimpleOnGestureListener() {
+            override fun onFling(
+                e1: MotionEvent?,
+                e2: MotionEvent,
+                velocityX: Float,
+                velocityY: Float
+            ): Boolean {
+                if (e1 == null) return false
+                
+                val diffX = e2.x - e1.x
+                val diffY = e2.y - e1.y
+                
+                // Only handle horizontal swipes
+                if (Math.abs(diffX) > Math.abs(diffY)) {
+                    if (Math.abs(diffX) > 100 && Math.abs(velocityX) > 100) {
+                        if (diffX > 0) {
+                            // Swipe right - go back
+                            if (webView.canGoBack()) {
+                                webView.goBack()
+                                return true
+                            }
+                        } else {
+                            // Swipe left - go forward
+                            if (webView.canGoForward()) {
+                                webView.goForward()
+                                return true
+                            }
+                        }
+                    }
+                }
+                return false
+            }
+        })
+
+        // Set touch listener for WebView
+        webView.setOnTouchListener { _, event ->
+            gestureDetector.onTouchEvent(event)
+            false
+        }
 
         webView.loadUrl("https://ppofficial.netlify.app/")
 
