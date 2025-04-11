@@ -54,7 +54,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         // 加载网页
-        webView.loadUrl("https://ppofficial.pages.dev")
+        webView.loadUrl("https://juejin.cn/")
 
 //        binding = ActivityMainBinding.inflate(layoutInflater)
 //        setContentView(R.layout.single_main)

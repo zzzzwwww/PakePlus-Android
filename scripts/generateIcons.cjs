@@ -17,6 +17,7 @@ program
     .option('--rounded', 'Apply circular mask to icons')
     .option('--copy-to <androidResDir>', 'Copy icons to Android res directory')
     .option('--app-name <name>', 'Set the app name in strings.xml')
+    .option('--web-url <url>', 'Set the web URL in MainActivity.kt')
 
 program.parse(process.argv)
 const options = program.opts()
@@ -140,9 +141,43 @@ async function updateAppName(androidResDir, appName) {
     }
 }
 
+async function updateWebUrl(androidResDir, webUrl) {
+    try {
+        // Assuming MainActivity.kt is in the standard location
+        const mainActivityPath = path.join(
+            androidResDir.replace('res', ''),
+            'java/com/app/pakeplus/MainActivity.kt'
+        )
+
+        // Check if file exists
+        const exists = await fs.pathExists(mainActivityPath)
+        if (!exists) {
+            console.log(
+                '⚠️ MainActivity.kt not found at expected location:',
+                mainActivityPath
+            )
+            return
+        }
+
+        // Read and update the file
+        let content = await fs.readFile(mainActivityPath, 'utf8')
+
+        // Replace the web URL in the loadUrl call
+        const updatedContent = content.replace(
+            /webView\.loadUrl\(".*?"\)/,
+            `webView.loadUrl("${webUrl}")`
+        )
+
+        await fs.writeFile(mainActivityPath, updatedContent)
+        console.log(`✅ Updated web URL to: ${webUrl}`)
+    } catch (error) {
+        console.error('❌ Error updating web URL:', error)
+    }
+}
+
 // Main execution
 ;(async () => {
-    const { input, output, copyTo, appName } = options
+    const { input, output, copyTo, appName, webUrl } = options
     const outPath = path.resolve(output)
     await generateAdaptiveIcons(input, outPath)
 
@@ -156,9 +191,19 @@ async function updateAppName(androidResDir, appName) {
             await updateAppName(dest, appName)
         }
 
+        // Update web URL if provided
+        if (webUrl) {
+            await updateWebUrl(dest, webUrl)
+        }
+
         // 删除根目录的res
         await fs.remove(outPath)
-    } else if (appName) {
-        console.log('⚠️ --app-name requires --copy-to to be specified')
+    } else {
+        if (appName) {
+            console.log('⚠️ --app-name requires --copy-to to be specified')
+        }
+        if (webUrl) {
+            console.log('⚠️ --web-url requires --copy-to to be specified')
+        }
     }
 })()

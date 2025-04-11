@@ -6,7 +6,8 @@
     "scripts": {
         "icon": "node ./scripts/generateIcons.cjs -i pakeplus.png  --copy-to app/src/main/res",
         "icon:round": "node ./scripts/generateIcons.cjs -i pakeplus.png --rounded --copy-to app/src/main/res",
-        "icon:appName": "node ./scripts/generateIcons.cjs -i pakeplus.png --copy-to app/src/main/res --app-name 1024小神"
+        "icon:appName": "node ./scripts/generateIcons.cjs -i pakeplus.png --copy-to app/src/main/res --app-name 1024小神",
+        "icon:webUrl": "node ./scripts/generateIcons.cjs -i pakeplus.png --copy-to app/src/main/res --web-url https://juejin.cn/"
     },
     "keywords": [
         "pakeplus",
