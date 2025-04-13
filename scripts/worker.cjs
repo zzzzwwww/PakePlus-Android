@@ -1,7 +1,7 @@
 const sharp = require('sharp')
 const fs = require('fs-extra')
 const path = require('path')
-const ppandroid = require('./ppandroid.json')
+const ppconfig = require('./ppconfig.json')
 
 // icon size
 const DENSITIES = {
@@ -216,7 +216,7 @@ async function updateBuildYml(tagName, releaseName, releaseBody) {
         tagName,
         releaseName,
         releaseBody,
-    } = ppandroid
+    } = ppconfig
     const outPath = path.resolve(output)
     await generateAdaptiveIcons(input, outPath)
 
