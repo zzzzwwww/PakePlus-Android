@@ -56,7 +56,7 @@ jobs:
                   files: app/build/outputs/apk/debug/*.apk
                   tagName: 'PakePlus-v0.0.1'
                   releaseName: 'PakePlus v0.0.1'
-                  releaseBody: 'PakePlus'
+                  releaseBody: 'PakePlus ReleaseBody'
                   draft: false
                   prerelease: false
               env:

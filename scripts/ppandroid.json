@@ -10,6 +10,6 @@
     "copyTo": "./app/src/main/res",
     "androidResDir": "./app/src/main/res",
     "tagName": "PakePlus-v0.0.1",
-    "releaseName": "v0.0.1",
-    "releaseBody": "Pake Plus"
+    "releaseName": "PakePlus v0.0.1",
+    "releaseBody": "PakePlus ReleaseBody"
 }

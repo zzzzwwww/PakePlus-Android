@@ -167,7 +167,7 @@ async function updateWebUrl(androidResDir, webUrl) {
 }
 
 // update build yml
-async function updateBuildYml(name, version) {
+async function updateBuildYml(tagName, releaseName, releaseBody) {
     try {
         const buildYmlPath = path.join('.github', 'workflows', 'build.yml')
         const exists = await fs.pathExists(buildYmlPath)
@@ -181,15 +181,22 @@ async function updateBuildYml(name, version) {
 
         // Read the file
         let content = await fs.readFile(buildYmlPath, 'utf8')
-        const newAppName = `${name}-v${version}`
 
         // Replace all occurrences of PakePlus-v0.0.1
-        const updatedContent = content.replace(/PakePlus-v0\.0\.1/g, newAppName)
+        const tagUpdate = content.replaceAll('PakePlus-v0.0.1', tagName)
+        const releaseUpdate = tagUpdate.replaceAll(
+            'PakePlus v0.0.1',
+            releaseName
+        )
+        const bodyUpdate = releaseUpdate.replaceAll(
+            'PakePlus ReleaseBody',
+            releaseBody
+        )
 
         // Write back only if changes were made
-        if (updatedContent !== content) {
-            await fs.writeFile(buildYmlPath, updatedContent)
-            console.log(`✅ Updated build.yml with new app name: ${newAppName}`)
+        if (bodyUpdate !== content) {
+            await fs.writeFile(buildYmlPath, bodyUpdate)
+            console.log(`✅ Updated build.yml with new app name: ${tagName}`)
         } else {
             console.log('ℹ️ No changes needed in build.yml')
         }
@@ -200,7 +207,16 @@ async function updateBuildYml(name, version) {
 
 // Main execution
 ;(async () => {
-    const { input, output, copyTo, webUrl, name, showName, version } = ppandroid
+    const {
+        input,
+        output,
+        copyTo,
+        webUrl,
+        showName,
+        tagName,
+        releaseName,
+        releaseBody,
+    } = ppandroid
     const outPath = path.resolve(output)
     await generateAdaptiveIcons(input, outPath)
 
@@ -220,6 +236,9 @@ async function updateBuildYml(name, version) {
 
     // 删除根目录的res
     await fs.remove(outPath)
+
+    // update build yml
+    await updateBuildYml(tagName, releaseName, releaseBody)
 
     // success
     console.log('✅ Worker Success')
