@@ -172,29 +172,23 @@ async function updateWebUrl(androidResDir, webUrl) {
     const outPath = path.resolve(output)
     await generateAdaptiveIcons(input, outPath)
 
-    if (copyTo) {
-        const dest = path.resolve(copyTo)
-        await fs.copy(outPath, dest, { overwrite: true })
-        console.log(`📦 Icons copied to Android res dir: ${dest}`)
+    const dest = path.resolve(copyTo)
+    await fs.copy(outPath, dest, { overwrite: true })
+    console.log(`📦 Icons copied to Android res dir: ${dest}`)
 
-        // Update app name if provided
-        if (appName) {
-            await updateAppName(dest, appName)
-        }
-
-        // Update web URL if provided
-        if (webUrl) {
-            await updateWebUrl(dest, webUrl)
-        }
-
-        // 删除根目录的res
-        await fs.remove(outPath)
-    } else {
-        if (appName) {
-            console.log('⚠️ --app-name requires --copy-to to be specified')
-        }
-        if (webUrl) {
-            console.log('⚠️ --web-url requires --copy-to to be specified')
-        }
+    // Update app name if provided
+    if (appName) {
+        await updateAppName(dest, appName)
     }
+
+    // Update web URL if provided
+    if (webUrl) {
+        await updateWebUrl(dest, webUrl)
+    }
+
+    // 删除根目录的res
+    await fs.remove(outPath)
+
+    // success
+    console.log('✅ Worker Success')
 })()
