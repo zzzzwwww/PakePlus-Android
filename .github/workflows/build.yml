@@ -45,6 +45,11 @@ jobs:
             - name: Build Debug APK
               run: ./gradlew assembleDebug
 
+            - name: Rename APK file
+              run: |
+                  cd app/build/outputs/apk/debug/
+                  mv app-debug.apk PakePlus-v0.0.1.apk
+
             - name: Create GitHub Release
               uses: softprops/action-gh-release@v2
               with:
