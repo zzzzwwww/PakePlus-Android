@@ -37,7 +37,7 @@ jobs:
             - name: Generate Android Icons
               run: |
                   pnpm install
-                  pnpm icon
+                  pnpm pp:worker
 
             - name: Grant Execute Permission for Gradle
               run: chmod +x ./gradlew
@@ -58,6 +58,6 @@ jobs:
                   releaseName: 'PakePlus v0.0.1'
                   releaseBody: 'PakePlus ReleaseBody'
                   draft: false
-                  prerelease: false
+                  release: true
               env:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
