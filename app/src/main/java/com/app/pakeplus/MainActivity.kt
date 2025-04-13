@@ -111,7 +111,7 @@ class MainActivity : AppCompatActivity() {
             false
         }
 
-        webView.loadUrl("https://ppofficial.netlify.app/")
+        webView.loadUrl("https://juejin.cn/")
 
 //        binding = ActivityMainBinding.inflate(layoutInflater)
 //        setContentView(R.layout.single_main)

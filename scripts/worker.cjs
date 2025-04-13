@@ -1,8 +1,9 @@
 const sharp = require('sharp')
 const fs = require('fs-extra')
 const path = require('path')
-const { program } = require('commander')
+const ppandroid = require('./ppandroid.json')
 
+// icon size
 const DENSITIES = {
     mdpi: 48,
     hdpi: 72,
@@ -11,17 +12,7 @@ const DENSITIES = {
     xxxhdpi: 192,
 }
 
-program
-    .requiredOption('-i, --input <file>', 'Path to source PNG')
-    .option('-o, --output <dir>', 'Output directory', 'res')
-    .option('--rounded', 'Apply circular mask to icons')
-    .option('--copy-to <androidResDir>', 'Copy icons to Android res directory')
-    .option('--app-name <name>', 'Set the app name in strings.xml')
-    .option('--web-url <url>', 'Set the web URL in MainActivity.kt')
-
-program.parse(process.argv)
-const options = program.opts()
-
+// generate adaptive icons
 async function generateAdaptiveIcons(input, outputDir) {
     for (const [dpi, size] of Object.entries(DENSITIES)) {
         const mipmapDir = path.join(outputDir, `mipmap-${dpi}`)
@@ -177,7 +168,7 @@ async function updateWebUrl(androidResDir, webUrl) {
 
 // Main execution
 ;(async () => {
-    const { input, output, copyTo, appName, webUrl } = options
+    const { input, output, copyTo, appName, webUrl } = ppandroid
     const outPath = path.resolve(output)
     await generateAdaptiveIcons(input, outPath)
 

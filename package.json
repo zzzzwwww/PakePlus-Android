@@ -1,13 +1,10 @@
 {
     "name": "pakeplus-android",
     "version": "1.0.0",
-    "description": "",
+    "description": "Pake Plus Android",
     "main": "index.js",
     "scripts": {
-        "icon": "node ./scripts/worker.cjs -i pakeplus.png  --copy-to app/src/main/res",
-        "icon:round": "node ./scripts/worker.cjs -i pakeplus.png --rounded --copy-to app/src/main/res",
-        "icon:appName": "node ./scripts/worker.cjs -i pakeplus.png --copy-to app/src/main/res --app-name 1024小神",
-        "icon:webUrl": "node ./scripts/worker.cjs -i pakeplus.png --copy-to app/src/main/res --web-url https://juejin.cn/"
+        "pp:worker": "node ./scripts/worker.cjs"
     },
     "keywords": [
         "pakeplus",

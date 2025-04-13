@@ -1,0 +1,10 @@
+{
+    "appName": "Pake Plus",
+    "webUrl": "https://juejin.cn/",
+    "icon": "./pakeplus.png",
+    "input": "./pakeplus.png",
+    "output": "./res",
+    "rounded": true,
+    "copyTo": "./app/src/main/res",
+    "androidResDir": "./app/src/main/res"
+}
