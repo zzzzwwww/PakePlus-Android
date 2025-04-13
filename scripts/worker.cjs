@@ -166,9 +166,41 @@ async function updateWebUrl(androidResDir, webUrl) {
     }
 }
 
+// update build yml
+async function updateBuildYml(name, version) {
+    try {
+        const buildYmlPath = path.join('.github', 'workflows', 'build.yml')
+        const exists = await fs.pathExists(buildYmlPath)
+        if (!exists) {
+            console.log(
+                '⚠️ build.yml not found at expected location:',
+                buildYmlPath
+            )
+            return
+        }
+
+        // Read the file
+        let content = await fs.readFile(buildYmlPath, 'utf8')
+        const newAppName = `${name}-v${version}`
+
+        // Replace all occurrences of PakePlus-v0.0.1
+        const updatedContent = content.replace(/PakePlus-v0\.0\.1/g, newAppName)
+
+        // Write back only if changes were made
+        if (updatedContent !== content) {
+            await fs.writeFile(buildYmlPath, updatedContent)
+            console.log(`✅ Updated build.yml with new app name: ${newAppName}`)
+        } else {
+            console.log('ℹ️ No changes needed in build.yml')
+        }
+    } catch (error) {
+        console.error('❌ Error updating build.yml:', error)
+    }
+}
+
 // Main execution
 ;(async () => {
-    const { input, output, copyTo, appName, webUrl } = ppandroid
+    const { input, output, copyTo, webUrl, name, showName, version } = ppandroid
     const outPath = path.resolve(output)
     await generateAdaptiveIcons(input, outPath)
 
@@ -177,8 +209,8 @@ async function updateWebUrl(androidResDir, webUrl) {
     console.log(`📦 Icons copied to Android res dir: ${dest}`)
 
     // Update app name if provided
-    if (appName) {
-        await updateAppName(dest, appName)
+    if (showName) {
+        await updateAppName(dest, showName)
     }
 
     // Update web URL if provided
