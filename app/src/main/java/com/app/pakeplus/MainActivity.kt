@@ -26,7 +26,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GestureDetectorCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import java.io.IOException
 
 class MainActivity : AppCompatActivity() {
 
@@ -54,8 +53,8 @@ class MainActivity : AppCompatActivity() {
         webView = findViewById<WebView>(R.id.webview)
 
         webView.settings.javaScriptEnabled = true
-        webView.settings.userAgentString =
-            "Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1"
+//        webView.settings.userAgentString =
+//            "Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1"
         webView.settings.loadWithOverviewMode = true
         webView.settings.setSupportZoom(false)
 
@@ -111,7 +110,7 @@ class MainActivity : AppCompatActivity() {
             false
         }
 
-        webView.loadUrl("https://juejin.cn/")
+        webView.loadUrl("https://www.baidu.com/")
 
 //        binding = ActivityMainBinding.inflate(layoutInflater)
 //        setContentView(R.layout.single_main)
@@ -187,12 +186,12 @@ class MainActivity : AppCompatActivity() {
         override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
             super.onPageStarted(view, url, favicon)
             // vConsole
-            val vConsole = assets.open("vConsole.js").bufferedReader().use { it.readText() }
+            // val vConsole = assets.open("vConsole.js").bufferedReader().use { it.readText() }
             // inject js
-            val injectJs = assets.open("inject.js").bufferedReader().use { it.readText() }
-            view?.evaluateJavascript(vConsole + injectJs, null)
+            val injectJs = assets.open("custom.js").bufferedReader().use { it.readText() }
+            view?.evaluateJavascript(injectJs, null)
             // open vConsole
-            view?.evaluateJavascript("""var vConsole = new window.VConsole()""", null)
+            // view?.evaluateJavascript("""var vConsole = new window.VConsole()""", null)
         }
     }
 
