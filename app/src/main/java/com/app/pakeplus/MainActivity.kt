@@ -110,7 +110,7 @@ class MainActivity : AppCompatActivity() {
             false
         }
 
-        webView.loadUrl("https://www.baidu.com/")
+        webView.loadUrl("https://juejin.cn/")
 
 //        binding = ActivityMainBinding.inflate(layoutInflater)
 //        setContentView(R.layout.single_main)
