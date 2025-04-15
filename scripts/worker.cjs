@@ -13,7 +13,7 @@ const DENSITIES = {
 }
 
 // generate adaptive icons
-async function generateAdaptiveIcons(input, outputDir) {
+const generateAdaptiveIcons = async (input, outputDir) => {
     for (const [dpi, size] of Object.entries(DENSITIES)) {
         const mipmapDir = path.join(outputDir, `mipmap-${dpi}`)
         await fs.ensureDir(mipmapDir)
@@ -88,7 +88,7 @@ async function generateAdaptiveIcons(input, outputDir) {
     console.log('✅ Adaptive icons generated in WebP format.')
 }
 
-async function updateAppName(androidResDir, appName) {
+const updateAppName = async (androidResDir, appName) => {
     try {
         const stringsPath = path.join(androidResDir, 'values', 'strings.xml')
 
@@ -132,7 +132,7 @@ async function updateAppName(androidResDir, appName) {
     }
 }
 
-async function updateWebUrl(androidResDir, webUrl) {
+const updateWebUrl = async (androidResDir, webUrl) => {
     try {
         // Assuming MainActivity.kt is in the standard location
         const mainActivityPath = path.join(
@@ -167,7 +167,7 @@ async function updateWebUrl(androidResDir, webUrl) {
 }
 
 // update build yml
-async function updateBuildYml(tagName, releaseName, releaseBody) {
+const updateBuildYml = async (tagName, releaseName, releaseBody) => {
     try {
         const buildYmlPath = path.join('.github', 'workflows', 'build.yml')
         const exists = await fs.pathExists(buildYmlPath)
@@ -206,7 +206,7 @@ async function updateBuildYml(tagName, releaseName, releaseBody) {
 }
 
 // Main execution
-;(async () => {
+const main = async () => {
     const {
         input,
         output,
@@ -242,4 +242,7 @@ async function updateBuildYml(tagName, releaseName, releaseBody) {
 
     // success
     console.log('✅ Worker Success')
-})()
+}
+
+// run
+main()
