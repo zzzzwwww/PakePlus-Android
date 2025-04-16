@@ -7,7 +7,7 @@
     "iconRound": true,
     "state": true,
     "single": true,
-    "injectJq": false,
+    "injectJq": true,
     "tauriApi": false,
     "devbug": false,
     "version": "0.0.1",
@@ -123,8 +123,21 @@
         "rounded": true,
         "copyTo": "./app/src/main/res",
         "androidResDir": "./app/src/main/res",
-        "tagName": "PakePlus-v0.0.1",
-        "releaseName": "PakePlus v0.0.1",
-        "releaseBody": "PakePlus ReleaseBody"
+        "pubBody": "PakePlus PubBody"
+    },
+    "desktop": {
+        "name": "PakePlus2",
+        "showName": "oaikes",
+        "version": "0.0.2",
+        "id": "com.oaikes.app",
+        "tauriApi": true,
+        "desc": "PakePlus Desc2",
+        "debug": true,
+        "webUrl": "https://juejin.cn/",
+        "iconPath": "../app-icon.png",
+        "inputPath": "../app-icon.png",
+        "tempPath": "./processed-image.png",
+        "icnsPath": "../src-tauri/icons/icon.icns",
+        "pubBody": "PakePlus PubBody"
     }
 }
