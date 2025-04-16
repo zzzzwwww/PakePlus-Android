@@ -305,4 +305,8 @@ const main = async () => {
 }
 
 // run
-main()
+try {
+    await main()
+} catch (error) {
+    console.error('❌ Worker Error:', error)
+}
