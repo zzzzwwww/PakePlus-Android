@@ -234,10 +234,46 @@ const setGithubEnv = (name, version, pubBody) => {
     console.log('setGithubEnv success')
 }
 
+// update android applicationId
+const updateAndroidId = async (id) => {
+    const gradlePath = path.join(__dirname, '../app/build.gradle.kts')
+    const exists = await fs.pathExists(gradlePath)
+    if (!exists) {
+        console.log('⚠️ build.gradle.kts not found, creating a new one')
+        return
+    }
+
+    // Read and update the file
+    let content = await fs.readFile(gradlePath, 'utf8')
+
+    // Replace the applicationId
+    const updatedContent = content.replace(
+        /applicationId = ".*?"/,
+        `applicationId = "${id}"`
+    )
+
+    // Write back only if changes were made
+    if (updatedContent !== content) {
+        await fs.writeFile(gradlePath, updatedContent)
+        console.log(`✅ Updated applicationId to: ${id}`)
+    } else {
+        console.log('ℹ️ No changes needed in build.gradle.kts')
+    }
+}
+
 // Main execution
 const main = async () => {
-    const { name, version, pubBody, input, output, copyTo, webUrl, showName } =
-        ppconfig.android
+    const {
+        name,
+        version,
+        id,
+        pubBody,
+        input,
+        output,
+        copyTo,
+        webUrl,
+        showName,
+    } = ppconfig.android
     const outPath = path.resolve(output)
     await generateAdaptiveIcons(input, outPath)
 
@@ -257,6 +293,9 @@ const main = async () => {
 
     // 删除根目录的res
     await fs.remove(outPath)
+
+    // update android applicationId
+    await updateAndroidId(id)
 
     // set github env
     setGithubEnv(name, version, pubBody)
