@@ -113,9 +113,9 @@
         "icon": ""
     },
     "android": {
-        "name": "PakePlus",
-        "showName": "Pake Plus",
-        "version": "0.0.1",
+        "name": "PakePlus3",
+        "showName": "PakePlus3",
+        "version": "0.0.3",
         "webUrl": "https://juejin.cn/",
         "icon": "./app-icon.png",
         "input": "./app-icon.png",
@@ -123,12 +123,12 @@
         "rounded": true,
         "copyTo": "./app/src/main/res",
         "androidResDir": "./app/src/main/res",
-        "pubBody": "PakePlus PubBody"
+        "pubBody": "PakePlus PubBody3"
     },
     "desktop": {
-        "name": "PakePlus2",
-        "showName": "oaikes",
-        "version": "0.0.2",
+        "name": "PakePlus",
+        "showName": "PakePlus",
+        "version": "0.0.1",
         "id": "com.oaikes.app",
         "tauriApi": true,
         "desc": "PakePlus Desc2",

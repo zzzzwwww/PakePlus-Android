@@ -34,7 +34,7 @@ jobs:
                   node-version: 20
                   cache: pnpm
 
-            - name: Generate Android Icons
+            - name: Init Project Config
               run: |
                   pnpm install
                   pnpm pp:worker
@@ -48,16 +48,19 @@ jobs:
             - name: Rename APK file
               run: |
                   cd app/build/outputs/apk/debug/
-                  mv app-debug.apk PakePlus-v0.0.1.apk
+                  mv app-debug.apk ${{ env.NAME }}-v${{ env.VERSION }}.apk
 
             - name: Create GitHub Release
               uses: softprops/action-gh-release@v2
               with:
                   files: app/build/outputs/apk/debug/*.apk
-                  tag_name: 'PakePlus-v0.0.1'
-                  name: 'PakePlus v0.0.1'
-                  body: 'PakePlus ReleaseBody'
+                  tag_name: '${{ env.NAME }}-v${{ env.VERSION }}'
+                  name: '${{ env.NAME }} v${{ env.VERSION }}'
+                  body: '${{ env.PUBBODY }}'
                   draft: false
                   publish: true
               env:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                  NAME: ${{ env.NAME }}
+                  VERSION: ${{ env.VERSION }}
+                  PUBBODY: ${{ env.PUBBODY }}

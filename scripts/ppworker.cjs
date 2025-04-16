@@ -89,6 +89,7 @@ const generateAdaptiveIcons = async (input, outputDir) => {
 }
 
 const updateAppName = async (androidResDir, appName) => {
+    // workerflow build apk name always is app-debug.apk
     try {
         const stringsPath = path.join(androidResDir, 'values', 'strings.xml')
 
@@ -205,18 +206,38 @@ const updateBuildYml = async (tagName, releaseName, releaseBody) => {
     }
 }
 
+// set github env
+const setGithubEnv = (name, version, pubBody) => {
+    console.log('setGithubEnv......')
+    const envPath = process.env.GITHUB_ENV
+    if (!envPath) {
+        console.error('GITHUB_ENV is not defined')
+        return
+    }
+    try {
+        const entries = {
+            NAME: name,
+            VERSION: version,
+            PUBBODY: pubBody,
+        }
+        for (const [key, value] of Object.entries(entries)) {
+            if (value !== undefined) {
+                fs.appendFileSync(envPath, `${key}=${value}\n`)
+            }
+        }
+        console.log('✅ Environment variables written to GITHUB_ENV')
+        // 查看env 变量
+        console.log(fs.readFileSync(envPath, 'utf-8'))
+    } catch (err) {
+        console.error('❌ Failed to parse config or write to GITHUB_ENV:', err)
+    }
+    console.log('setGithubEnv success')
+}
+
 // Main execution
 const main = async () => {
-    const {
-        input,
-        output,
-        copyTo,
-        webUrl,
-        showName,
-        tagName,
-        releaseName,
-        releaseBody,
-    } = ppconfig.android
+    const { name, version, pubBody, input, output, copyTo, webUrl, showName } =
+        ppconfig.android
     const outPath = path.resolve(output)
     await generateAdaptiveIcons(input, outPath)
 
@@ -237,8 +258,8 @@ const main = async () => {
     // 删除根目录的res
     await fs.remove(outPath)
 
-    // update build yml
-    await updateBuildYml(tagName, releaseName, releaseBody)
+    // set github env
+    setGithubEnv(name, version, pubBody)
 
     // success
     console.log('✅ Worker Success')
