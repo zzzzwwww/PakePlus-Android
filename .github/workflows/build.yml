@@ -58,7 +58,6 @@ jobs:
                   name: '${{ env.NAME }} v${{ env.VERSION }}'
                   body: '${{ env.PUBBODY }}'
                   draft: false
-                  publish: true
               env:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
                   NAME: ${{ env.NAME }}
