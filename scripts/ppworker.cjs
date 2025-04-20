@@ -304,5 +304,8 @@ const main = async () => {
     console.log('✅ Worker Success')
 }
 
-// run
-main()
+try {
+    main()
+} catch (error) {
+    console.error('❌ Worker Error:', error)
+}
