@@ -108,37 +108,51 @@
         }
     },
     "ios": {
-        "name": "",
-        "appid": "",
-        "icon": ""
+        "name": "PakePlus",
+        "showName": "PakePlus",
+        "version": "0.0.1",
+        "webUrl": "https://juejin.cn/",
+        "id": "com.oaikes.app",
+        "icon": "./app-icon.png",
+        "desc": "PakePlus Project by 1024xiaoshen",
+        "pubBody": "PakePlus ios build body",
+        "isHtml": false,
+        "debug": false
     },
     "android": {
-        "name": "PakePlus3",
-        "showName": "PakePlus3",
-        "version": "0.0.3",
-        "id": "com.oaikes.pakeplus.android",
+        "name": "PakePlus",
+        "showName": "PakePlus",
+        "version": "0.0.1",
         "webUrl": "https://juejin.cn/",
+        "id": "com.oaikes.pakeplus.android",
         "icon": "./app-icon.png",
         "input": "./app-icon.png",
         "output": "./res",
         "rounded": true,
         "copyTo": "./app/src/main/res",
         "androidResDir": "./app/src/main/res",
-        "pubBody": "PakePlus PubBody3"
+        "desc": "PakePlus Project by 1024xiaoshen",
+        "pubBody": "PakePlus android build body",
+        "isHtml": false,
+        "debug": false
     },
     "desktop": {
-        "name": "PakePlus",
-        "showName": "PakePlus",
-        "version": "0.0.1",
-        "id": "com.oaikes.pakeplus.desktop",
-        "tauriApi": true,
-        "desc": "PakePlus Desc2",
-        "debug": true,
+        "name": "PakePlus2",
+        "showName": "oaikes",
+        "version": "0.0.2",
+        "id": "com.oaikes.app",
+        "desc": "PakePlus Project by 1024xiaoshen",
         "webUrl": "https://juejin.cn/",
         "iconPath": "../app-icon.png",
         "inputPath": "../app-icon.png",
         "tempPath": "./processed-image.png",
         "icnsPath": "../src-tauri/icons/icon.icns",
-        "pubBody": "PakePlus PubBody"
+        "pubBody": "PakePlus desktop build body",
+        "isHtml": false,
+        "single": true,
+        "state": true,
+        "injectJq": false,
+        "tauriApi": false,
+        "debug": false
     }
 }

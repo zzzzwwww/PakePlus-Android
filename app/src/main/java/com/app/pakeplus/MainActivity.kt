@@ -52,7 +52,13 @@ class MainActivity : AppCompatActivity() {
 
         webView = findViewById<WebView>(R.id.webview)
 
-        webView.settings.javaScriptEnabled = true
+        webView.settings.apply {
+            javaScriptEnabled = true       // 启用JS
+            domStorageEnabled = true       // 启用DOM存储（Vue 需要）
+            allowFileAccess = true         // 允许文件访问
+            setSupportMultipleWindows(true)
+        }
+
 //        webView.settings.userAgentString =
 //            "Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1"
         webView.settings.loadWithOverviewMode = true
@@ -110,7 +116,7 @@ class MainActivity : AppCompatActivity() {
             false
         }
 
-        webView.loadUrl("https://www.pakeplus.com")
+        webView.loadUrl("https://juejin.cn/")
 
 //        binding = ActivityMainBinding.inflate(layoutInflater)
 //        setContentView(R.layout.single_main)
@@ -161,6 +167,9 @@ class MainActivity : AppCompatActivity() {
 
     inner class MyWebViewClient : WebViewClient() {
 
+        // vConsole debug
+        private var debug = false
+
         @Deprecated("Deprecated in Java", ReplaceWith("false"))
         override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
             return false
@@ -176,7 +185,7 @@ class MainActivity : AppCompatActivity() {
             error: WebResourceError?
         ) {
             super.onReceivedError(view, request, error)
-            println("webView onReceivedError")
+            println("webView onReceivedError: ${error?.description}")
         }
 
         override fun onPageFinished(view: WebView?, url: String?) {
@@ -185,13 +194,15 @@ class MainActivity : AppCompatActivity() {
 
         override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
             super.onPageStarted(view, url, favicon)
-            // vConsole
-            // val vConsole = assets.open("vConsole.js").bufferedReader().use { it.readText() }
+            if (debug) {
+                // vConsole
+                val vConsole = assets.open("vConsole.js").bufferedReader().use { it.readText() }
+                val openDebug = """var vConsole = new window.VConsole()"""
+                view?.evaluateJavascript(vConsole + openDebug, null)
+            }
             // inject js
             val injectJs = assets.open("custom.js").bufferedReader().use { it.readText() }
             view?.evaluateJavascript(injectJs, null)
-            // open vConsole
-            // view?.evaluateJavascript("""var vConsole = new window.VConsole()""", null)
         }
     }
 
