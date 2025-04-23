@@ -291,9 +291,7 @@ const main = async () => {
     console.log(`📦 Icons copied to Android res dir: ${dest}`)
 
     // Update app name if provided
-    if (showName) {
-        await updateAppName(dest, showName)
-    }
+    await updateAppName(dest, showName)
 
     // Update web URL if provided
     await updateWebEnv(dest, webUrl, debug)
