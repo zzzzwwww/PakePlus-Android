@@ -160,10 +160,11 @@ const updateWebEnv = async (androidResDir, webUrl, debug) => {
             `webView.loadUrl("${webUrl}")`
         )
         // if debug is true, add debug mode
+        console.log('webview debug to:', debug)
         if (debug) {
             updatedContent = updatedContent.replace(
                 'private var debug = false',
-                'var debug = true'
+                'private var debug = true'
             )
         }
         await fs.writeFile(mainActivityPath, updatedContent)
