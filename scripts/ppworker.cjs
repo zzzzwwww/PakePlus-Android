@@ -133,7 +133,7 @@ const updateAppName = async (androidResDir, appName) => {
     }
 }
 
-const updateWebUrl = async (androidResDir, webUrl) => {
+const updateWebEnv = async (androidResDir, webUrl, debug) => {
     try {
         // Assuming MainActivity.kt is in the standard location
         const mainActivityPath = path.join(
@@ -159,6 +159,14 @@ const updateWebUrl = async (androidResDir, webUrl) => {
             /webView\.loadUrl\(".*?"\)/,
             `webView.loadUrl("${webUrl}")`
         )
+
+        // if debug is true, add debug mode
+        if (debug) {
+            updatedContent = updatedContent.replace(
+                'private var debug = false',
+                'private var debug = true'
+            )
+        }
 
         await fs.writeFile(mainActivityPath, updatedContent)
         console.log(`✅ Updated web URL to: ${webUrl}`)
@@ -273,6 +281,7 @@ const main = async () => {
         copyTo,
         webUrl,
         showName,
+        debug,
     } = ppconfig.android
     const outPath = path.resolve(output)
     await generateAdaptiveIcons(input, outPath)
@@ -287,9 +296,7 @@ const main = async () => {
     }
 
     // Update web URL if provided
-    if (webUrl) {
-        await updateWebUrl(dest, webUrl)
-    }
+    await updateWebEnv(dest, webUrl, debug)
 
     // 删除根目录的res
     await fs.remove(outPath)
