@@ -155,19 +155,17 @@ const updateWebEnv = async (androidResDir, webUrl, debug) => {
         let content = await fs.readFile(mainActivityPath, 'utf8')
 
         // Replace the web URL in the loadUrl call
-        const updatedContent = content.replace(
+        let updatedContent = content.replace(
             /webView\.loadUrl\(".*?"\)/,
             `webView.loadUrl("${webUrl}")`
         )
-
         // if debug is true, add debug mode
         if (debug) {
             updatedContent = updatedContent.replace(
                 'private var debug = false',
-                'private var debug = true'
+                'var debug = true'
             )
         }
-
         await fs.writeFile(mainActivityPath, updatedContent)
         console.log(`✅ Updated web URL to: ${webUrl}`)
     } catch (error) {
