@@ -8,7 +8,7 @@ android {
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.oaikes.pakeplus.android"
+        applicationId = "com.app.pakeplus.android"
         minSdk = 24
         targetSdk = 34
         versionCode = 1
