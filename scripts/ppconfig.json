@@ -105,6 +105,15 @@
             "fontSize": 16,
             "fontWeight": "bold",
             "tabBarItem": []
+        },
+        "webview": {
+            "userAgent": "",
+            "javaScriptEnabled": true,
+            "domStorageEnabled": true,
+            "allowFileAccess": true,
+            "loadWithOverviewMode": true,
+            "setSupportZoom": true,
+            "clearCache": true
         }
     },
     "ios": {

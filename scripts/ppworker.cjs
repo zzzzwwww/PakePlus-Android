@@ -309,12 +309,12 @@ const main = async () => {
 }
 
 // run
-try {
-    ;(async () => {
+;(async () => {
+    try {
         console.log('🚀 worker start')
         await main()
         console.log('🚀 worker end')
-    })()
-} catch (error) {
-    console.error('❌ Worker Error:', error)
-}
+    } catch (error) {
+        console.error('❌ Worker Error:', error)
+    }
+})()
