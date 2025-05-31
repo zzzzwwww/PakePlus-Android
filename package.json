@@ -4,7 +4,8 @@
     "description": "Pake Plus Android",
     "main": "index.js",
     "scripts": {
-        "pp:worker": "node ./scripts/ppworker.cjs"
+        "pp:worker": "node ./scripts/ppworker.cjs",
+        "restore": "git restore ."
     },
     "keywords": [
         "pakeplus",
