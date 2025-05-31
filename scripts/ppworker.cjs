@@ -133,8 +133,10 @@ const updateAppName = async (androidResDir, appName) => {
     }
 }
 
-const updateWebEnv = async (androidResDir, webUrl, debug) => {
+const updateWebEnv = async (androidResDir, webUrl, debug, webview) => {
     try {
+        const { userAgent } = webview
+
         // Assuming MainActivity.kt is in the standard location
         const mainActivityPath = path.join(
             androidResDir.replace('res', ''),
@@ -167,6 +169,15 @@ const updateWebEnv = async (androidResDir, webUrl, debug) => {
                 'private var debug = true'
             )
         }
+
+        // update webview userAgent
+        if (userAgent) {
+            updatedContent = updatedContent.replace(
+                '// webView.settings.userAgentString = ""',
+                `webView.settings.userAgentString = "${userAgent}"`
+            )
+        }
+
         await fs.writeFile(mainActivityPath, updatedContent)
         console.log(`✅ Updated web URL to: ${webUrl}`)
     } catch (error) {
@@ -270,6 +281,7 @@ const updateAndroidId = async (id) => {
 
 // Main execution
 const main = async () => {
+    const { webview } = ppconfig.phone
     const {
         name,
         version,
@@ -282,6 +294,7 @@ const main = async () => {
         showName,
         debug,
     } = ppconfig.android
+
     const outPath = path.resolve(output)
     await generateAdaptiveIcons(input, outPath)
 
@@ -293,7 +306,7 @@ const main = async () => {
     await updateAppName(dest, showName)
 
     // Update web URL if provided
-    await updateWebEnv(dest, webUrl, debug)
+    await updateWebEnv(dest, webUrl, debug, webview)
 
     // 删除根目录的res
     await fs.remove(outPath)
