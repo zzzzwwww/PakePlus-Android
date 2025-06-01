@@ -116,7 +116,8 @@ class MainActivity : AppCompatActivity() {
             false
         }
 
-        webView.loadUrl("https://juejin.cn/")
+        // webView.loadUrl("https://juejin.cn/")
+        webView.loadUrl("file:///android_asset/index.html")
 
 //        binding = ActivityMainBinding.inflate(layoutInflater)
 //        setContentView(R.layout.single_main)
@@ -168,7 +169,7 @@ class MainActivity : AppCompatActivity() {
     inner class MyWebViewClient : WebViewClient() {
 
         // vConsole debug
-        private var debug = false
+        private var debug = true
 
         @Deprecated("Deprecated in Java", ReplaceWith("false"))
         override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
