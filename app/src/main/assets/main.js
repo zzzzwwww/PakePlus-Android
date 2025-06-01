@@ -1,3 +1,8 @@
+function sayHello() {
+    alert('你好，这是本地JS代码！')
+}
+
+
 console.log('main.js---')
 
 window.addEventListener('DOMContentLoaded', () => {
