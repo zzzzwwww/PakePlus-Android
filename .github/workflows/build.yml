@@ -51,7 +51,7 @@ jobs:
                   mv app-debug.apk ${{ env.NAME }}-v${{ env.VERSION }}.apk
 
             - name: Create GitHub Release
-              uses: softprops/action-gh-release@v2
+              uses: softprops/action-gh-release@v1
               with:
                   files: app/build/outputs/apk/debug/*.apk
                   tag_name: '${{ env.NAME }}'
