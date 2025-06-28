@@ -11,17 +11,17 @@ import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.activity.enableEdgeToEdge
-//import android.view.Menu
-//import android.view.WindowInsets
-//import com.google.android.material.snackbar.Snackbar
-//import com.google.android.material.navigation.NavigationView
-//import androidx.navigation.findNavController
-//import androidx.navigation.ui.AppBarConfiguration
-//import androidx.navigation.ui.navigateUp
-//import androidx.navigation.ui.setupActionBarWithNavController
-//import androidx.navigation.ui.setupWithNavController
-//import androidx.drawerlayout.widget.DrawerLayout
-//import com.app.pakeplus.databinding.ActivityMainBinding
+// import android.view.Menu
+// import android.view.WindowInsets
+// import com.google.android.material.snackbar.Snackbar
+// import com.google.android.material.navigation.NavigationView
+// import androidx.navigation.findNavController
+// import androidx.navigation.ui.AppBarConfiguration
+// import androidx.navigation.ui.navigateUp
+// import androidx.navigation.ui.setupActionBarWithNavController
+// import androidx.navigation.ui.setupWithNavController
+// import androidx.drawerlayout.widget.DrawerLayout
+// import com.app.pakeplus.databinding.ActivityMainBinding
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GestureDetectorCompat
 import androidx.core.view.ViewCompat
@@ -59,8 +59,8 @@ class MainActivity : AppCompatActivity() {
             setSupportMultipleWindows(true)
         }
 
-//        webView.settings.userAgentString =
-//            "Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1"
+        // webView.settings.userAgentString = ""
+
         webView.settings.loadWithOverviewMode = true
         webView.settings.setSupportZoom(false)
 
